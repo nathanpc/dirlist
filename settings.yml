@@ -1,11 +1,11 @@
 ---
 roots:
-  - name: "webroot"
+  webroot:
     type: "normal"
     path:
       system: "~/Sites"
       web: "/"
-  - name: "videos"
+  videos:
     type: "media"
     path:
       system: "~/Videos"

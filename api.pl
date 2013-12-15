@@ -5,10 +5,19 @@
 
 use strict;
 use warnings;
-use Data::Dumper;
+use File::Find;
 
+use Data::Dumper;
 use Mojolicious::Lite;
 use YAML::Tiny;
+
+# Load settings.
+my $settings = YAML::Tiny->read("settings.yml");
+if (!defined($settings)) {
+	die YAML::Tiny->errstr;
+} else {
+	$settings = $settings->[0];
+}
 
 # Checks if a parameter was defined.
 sub param_defined {
@@ -19,30 +28,97 @@ sub param_defined {
 	}
 
 	return 0;
-}	
+}
+
+# Builds a file path.
+sub build_path {
+	my ($root_name, $path) = @_;
+	my $root = $settings->{"roots"}->{$root_name}->{"path"}->{"system"};
+
+	# Removes the / in the end of the root path if it exists.
+	$root =~ s/\/$//;
+
+	return $root . $path;
+}
+
+# Build a item ID.
+sub build_ids {
+	my @contents = @_;
+	my @ids;
+
+	foreach my $item (@contents) {
+		$item =~ s/("|'|\s)/_/gi;
+		push(@ids, $item);
+	}
+
+	return @ids;
+}
+
+# Builds a hash with the response to a list request.
+sub list_dir {
+	my ($root_name, $path) = @_;
+
+	# Get directory contents.
+	my $root = glob(build_path($root_name, $path));
+	my @contents;
+	opendir(my $dir, $root) or die "Couldn't open $root: $!";
+	while (my $item = readdir($dir)) {
+		# Ignore hidden directories.
+		next if ($item =~ /^\./);
+		push(@contents, $item);
+	}
+	closedir($dir);
+
+	my @ids = build_ids(@contents);
+	my $dirlist = {};
+
+	# Get information on each item.
+	for (my $i = 0; $i < $#contents + 1; $i++) {
+		my $full_path = $root . $contents[$i];
+
+		# Get type.
+		if (-d $full_path) {
+			$dirlist->{$contents[$i]}->{"type"} = "directory";
+
+			# Get size. (http://www.perlmonks.org/?node_id=168974)
+			my $size = 0;
+			find(sub { $size += -s if -f $_ }, $full_path);
+			$dirlist->{$contents[$i]}->{"size"} = $size;
+		} else {
+			$dirlist->{$contents[$i]}->{"type"} = "file";
+
+			# Get size.
+			$dirlist->{$contents[$i]}->{"size"} = -s $full_path;
+		}
+	}
+
+	return {
+		"ids" => \@ids,
+		"contents" => $dirlist
+	};
+}
 
 # List everything in the directory.
 get "/list" => sub {
 	my $self = shift;
 	my $path = $self->param("path");
 	my $root_name = $self->param("root");
+	my $response = {};
 
 	# Check for parameters.
 	if (param_defined($path)) {
 		# Check for path.
-		$self->render(json => {
+		$response = {
 			"error" => "No path specified."
-		});
+		};
 	} elsif (param_defined($root_name)) {
 		# Check for the root name.
-		$self->render(json => {
+		$response = {
 			"error" => "No root name specified."
-		});
+		};
+	} else {
+		$response = list_dir($root_name, $path);
 	}
-
-	my $response = {
-		"test" => "hello world!"
-	};
 
 	# Reply with the JSON.
 	$self->render(json => $response);
