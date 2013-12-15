@@ -1,0 +1,12 @@
+---
+roots:
+  - name: "webroot"
+    type: "normal"
+    path:
+      system: "~/Sites"
+      web: "/"
+  - name: "videos"
+    type: "media"
+    path:
+      system: "~/Videos"
+      web: "/Videos"
