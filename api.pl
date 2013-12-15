@@ -8,22 +8,41 @@ use warnings;
 use Data::Dumper;
 
 use Mojolicious::Lite;
+use YAML::Tiny;
 
-# /list?path={path}
+# Checks if a parameter was defined.
+sub param_defined {
+	my ($param) = @_;
+
+	if ((!defined($param)) or ($param eq "")) {
+		return 1;
+	}
+
+	return 0;
+}	
+
+# List everything in the directory.
 get "/list" => sub {
 	my $self = shift;
 	my $path = $self->param("path");
-	my $response;
+	my $root_name = $self->param("root");
 
-	if ((!defined($path)) or ($path eq "")) {
-		$response = {
+	# Check for parameters.
+	if (param_defined($path)) {
+		# Check for path.
+		$self->render(json => {
 			"error" => "No path specified."
-		};
-	} else {
-		$response = {
-			"test" => "hello world!"
-		};
+		});
+	} elsif (param_defined($root_name)) {
+		# Check for the root name.
+		$self->render(json => {
+			"error" => "No root name specified."
+		});
 	}
+
+	my $response = {
+		"test" => "hello world!"
+	};
 
 	# Reply with the JSON.
 	$self->render(json => $response);
