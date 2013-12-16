@@ -10,6 +10,8 @@ use File::Find;
 use Data::Dumper;
 use Mojolicious::Lite;
 use YAML::Tiny;
+use URI::Escape;
+use File::Path::Expand;
 
 # Load settings.
 my $settings = YAML::Tiny->read("settings.yml");
@@ -41,6 +43,26 @@ sub build_path {
 	return $root . $path;
 }
 
+# Builds a URL to the file hosted in the web server.
+sub build_url {
+	my ($self, $root_name, $path, $file) = @_;
+	my $base = $self->req->url->base;
+	my $url = $base->scheme . "://" . $base->host;
+
+	my $root = $settings->{"roots"}->{$root_name}->{"path"}->{"web"};
+	$root =~ s/\/$//; # Removes the / in the end of the root path.
+	$url .= $root;
+
+	my @parts = split("/", $path);
+	foreach (@parts) {
+		uri_escape($_);
+	}
+	$url .= join("/", @parts);
+	$url .= "/" . uri_escape("$file");
+
+	return $url;
+}
+
 # Build a item ID.
 sub build_ids {
 	my @contents = @_;
@@ -56,10 +78,10 @@ sub build_ids {
 
 # Builds a hash with the response to a list request.
 sub list_dir {
-	my ($root_name, $path) = @_;
+	my ($self, $root_name, $path) = @_;
 
 	# Get directory contents.
-	my $root = glob(build_path($root_name, $path));
+	my $root = expand_filename(build_path($root_name, $path));
 	my @contents;
 	opendir(my $dir, $root) or die "Couldn't open $root: $!";
 	while (my $item = readdir($dir)) {
@@ -90,6 +112,8 @@ sub list_dir {
 			# Get size.
 			$dirlist->{$contents[$i]}->{"size"} = -s $full_path;
 		}
+
+		$dirlist->{$contents[$i]}->{"href"} = build_url($self, $root_name, $path, $contents[$i]);
 	}
 
 	return {
@@ -117,7 +141,7 @@ get "/list" => sub {
 			"error" => "No root name specified."
 		};
 	} else {
-		$response = list_dir($root_name, $path);
+		$response = list_dir($self, $root_name, $path);
 	}
 
 	# Reply with the JSON.
