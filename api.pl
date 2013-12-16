@@ -97,6 +97,9 @@ sub list_dir {
 	# Get information on each item.
 	for (my $i = 0; $i < $#contents + 1; $i++) {
 		my $full_path = $root . $contents[$i];
+		if (!($root =~ /\/$/)) {
+			$full_path = $root . "/" . $contents[$i];
+		}
 
 		# Get type.
 		if (-d $full_path) {
