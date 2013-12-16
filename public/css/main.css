@@ -1,0 +1,43 @@
+body {
+	background: whitesmoke;
+}
+
+.screen {
+	padding-top: 41px;
+}
+
+.grid {
+	width: 100%;
+}
+
+.grid > .box {
+	display: inline-block;
+	-webkit-box-orient: vertical;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+
+	width: 126px;
+	padding: 10px;
+
+	text-align: center;
+}
+
+.grid > .box:hover {
+	background: rgb(231, 231, 231);
+}
+
+.box > img {
+	/*display: -webkit-box;*/
+	max-width: 70px;
+}
+
+.box > .name {
+	font-weight: bold;
+}
+
+.box > .size {
+	font-size: 12px;
+	line-height: 16px;
+	color: rgb(121, 121, 121);
+}

@@ -151,5 +151,11 @@ get "/list" => sub {
 	$self->render(json => $response);
 };
 
+# The webapp itself.
+any "/" => sub {
+	my $self = shift;
+	$self->render("index");
+};
+
 # Start the web app.
 app->start();
