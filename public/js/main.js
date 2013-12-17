@@ -133,6 +133,7 @@ dirlist.set_path = function (path, contents) {
 	folders = path.split("/");
 	folders[0] = "/";
 
+	// Set the global variables.
 	dirlist.current.path = path;
 	dirlist.current.contents = contents;
 	path_label.innerHTML = "";
@@ -140,12 +141,19 @@ dirlist.set_path = function (path, contents) {
 	// Populate the menu.
 	for (var i = 0; i < folders.length; i++) {
 		var li = document.createElement("li");
+		var path_arr = folders.slice(0, i + 1);
+
+		// Remove the excess slashes in the beginning for the join.
+		if (path_arr.length > 1) {
+			path_arr[0] = "";
+		}
 
 		var a = document.createElement("a");
 		a.setAttribute("href", "#");
+		a.setAttribute("id", path_arr.join("/"));
 		a.innerText = folders[i];
 		a.onclick = function () {
-			// TODO: history thingy.
+			dirlist.load_folder(this.getAttribute("id"));
 		}
 
 		li.appendChild(a);
@@ -275,10 +283,14 @@ dirlist.build_box = function (id, item) {
 
 	var box = document.createElement("div");
 	box.setAttribute("class", "box");
-	box.onclick = function () {
-		var name_field = this.getElementsByClassName("name")[0];
-		// TODO: Get it's ID for the full path ID.
-		console.log(name_field);
+	box.setAttribute("title", item.name);
+	if (item.type === "directory") {
+		box.onclick = function () {
+			var name = this.getElementsByClassName("name")[0].getAttribute("id");
+			var item = dirlist.current.contents.contents[name];
+
+			dirlist.load_folder(dirlist.current.path + "/" + item.name);
+		}
 	}
 
 	var img = document.createElement("img");
