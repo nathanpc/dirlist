@@ -6,6 +6,14 @@ body {
 	padding-top: 70px;
 }
 
+.collapse.navbar-collapse > .btn-group:first-of-type {
+	margin-left: 0;
+}
+
+.collapse.navbar-collapse > .btn-group {
+	margin-left: 10px;
+}
+
 #Home > .breadcrumb {
 	margin-bottom: 0;
 }
