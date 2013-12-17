@@ -154,6 +154,19 @@ dirlist.set_path = function (path, contents) {
 }
 
 /**
+ *  Sort the grid by.
+ *
+ *  @param type Sorting type.
+ */
+dirlist.sort_by = function (type) {
+	// Save it.
+	localStorage.setItem("sort_type", type);
+
+	// Update the grid.
+	dirlist.populate_grid(dirlist.current.contents);
+}
+
+/**
  *  Populate the grid.
  *
  *  @param list JSON response from the server.
@@ -161,8 +174,33 @@ dirlist.set_path = function (path, contents) {
  */
 dirlist.populate_grid = function (list, sort) {
 	if (sort === undefined) {
-		// TODO: Get the value from localStorage.
-		// TODO: If it doesn't exist, create it and put "Name" in there.
+		sort = localStorage.getItem("sort_type");
+
+		// No sort type set.
+		if (sort === null) {
+			sort = "name";
+			localStorage.setItem("sort_type", "name");
+		}
+	}
+
+	// Sort the list.
+	if (sort === "name") {
+		// Sort by name.
+		list.ids.sort();
+	} else if (sort === "size") {
+		// Sort by size.
+		list.ids.sort(function (a, b) {
+			if (list.contents[a].size < list.contents[b].size) {
+				return -1;
+			} else if (list.contents[a].size > list.contents[b].size) {
+				return 1;
+			} else {
+				return 0;
+			}
+		});
+
+		// Make it descending.
+		list.ids.reverse();
 	}
 
 	// Clear the grid.

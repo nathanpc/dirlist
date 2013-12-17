@@ -50,8 +50,8 @@
 							<li class="dropdown">
 								<a href="#" class="dropdown-toggle" data-toggle="dropdown">Sort by <b class="caret"></b></a>
 								<ul id="sort-menu" class="dropdown-menu">
-									<li><a href="#">Name</a></li>
-									<li><a href="#">Size</a></li>
+									<li><a href="#" onclick="dirlist.sort_by('name')">Name</a></li>
+									<li><a href="#" onclick="dirlist.sort_by('size')">Size</a></li>
 								</ul>
 							</li>
 
