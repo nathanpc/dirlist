@@ -69,7 +69,7 @@ sub build_ids {
 	my @ids;
 
 	foreach my $item (@contents) {
-		$item =~ s/("|'|\s)/_/gi;
+		$item =~ s/("|'|\.|\s)/_/gi;
 		push(@ids, $item);
 	}
 
@@ -101,22 +101,25 @@ sub list_dir {
 			$full_path = $root . "/" . $contents[$i];
 		}
 
+		# Set name.
+		$dirlist->{$ids[$i]}->{"name"} = $contents[$i];
+
 		# Get type.
 		if (-d $full_path) {
-			$dirlist->{$contents[$i]}->{"type"} = "directory";
+			$dirlist->{$ids[$i]}->{"type"} = "directory";
 
 			# Get size. (http://www.perlmonks.org/?node_id=168974)
 			my $size = 0;
 			find(sub { $size += -s if -f $_ }, $full_path);
-			$dirlist->{$contents[$i]}->{"size"} = $size;
+			$dirlist->{$ids[$i]}->{"size"} = $size;
 		} else {
-			$dirlist->{$contents[$i]}->{"type"} = "file";
+			$dirlist->{$ids[$i]}->{"type"} = "file";
 
 			# Get size.
-			$dirlist->{$contents[$i]}->{"size"} = -s $full_path;
+			$dirlist->{$ids[$i]}->{"size"} = -s $full_path;
 		}
 
-		$dirlist->{$contents[$i]}->{"href"} = build_url($self, $root_name, $path, $contents[$i]);
+		$dirlist->{$ids[$i]}->{"href"} = build_url($self, $root_name, $path, $contents[$i]);
 	}
 
 	return {
