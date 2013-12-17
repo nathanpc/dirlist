@@ -151,6 +151,16 @@ get "/list" => sub {
 	$self->render(json => $response);
 };
 
+# List the Roots.
+get "/roots" => sub {
+	my $self = shift;
+	my @roots = keys($settings->{"roots"});
+
+	$self->render(json => {
+		"roots" => \@roots
+	});
+};
+
 # The webapp itself.
 any "/" => sub {
 	my $self = shift;
