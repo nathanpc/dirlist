@@ -239,6 +239,40 @@ dirlist.populate_grid = function (list, sort, ascending) {
  *  @return Box element.
  */
 dirlist.build_box = function (id, item) {
+	// Choose the correct icon.
+	var icon = "img/";
+	switch (item.type) {
+	case "directory":
+		icon += "folder.png";
+		break;
+	case "file":
+		icon += "file.png";
+		break;
+	case "image":
+		icon += "image.png";
+		break;
+	case "video":
+		icon += "video.png";
+		break;
+	case "audio":
+		icon += "audio.png";
+		break;
+	case "pdf":
+		icon += "pdf.png";
+		break;
+	default:
+		icon += "file.png";
+		break;
+	}
+
+	// Human-readable size.
+	var sizes = ["bytes", "kB", "MB", "GB", "TB"];
+	var size = "0 bytes";
+	if (item.size !== 0) {
+		var i = parseInt(Math.floor(Math.log(item.size) / Math.log(1024)));
+		size = (item.size / Math.pow(1024, i)).toPrecision(4) + ' ' + sizes[i];
+	}
+
 	var box = document.createElement("div");
 	box.setAttribute("class", "box");
 	box.onclick = function () {
@@ -248,7 +282,7 @@ dirlist.build_box = function (id, item) {
 	}
 
 	var img = document.createElement("img");
-	img.setAttribute("src", "img/folder.png"); // TODO: Detect type.
+	img.setAttribute("src", icon);
 	box.appendChild(img);
 
 	var lbl_name = document.createElement("div");
@@ -259,7 +293,7 @@ dirlist.build_box = function (id, item) {
 
 	var lbl_size = document.createElement("div");
 	lbl_size.setAttribute("class", "size");
-	lbl_size.innerText = item.size;  // TODO: Convert to a better size.
+	lbl_size.innerText = size;
 	box.appendChild(lbl_size);
 
 	return box;

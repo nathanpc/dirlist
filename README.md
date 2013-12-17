@@ -11,3 +11,4 @@ This application requires the following packages to be installed:
   - [YAML::Tiny](http://search.cpan.org/dist/YAML-Tiny/lib/YAML/Tiny.pm)
   - [URI::Escape](http://search.cpan.org/~gaas/URI-1.60/URI/Escape.pm)
   - [File::Path::Expand](http://search.cpan.org/~rclamp/File-Path-Expand-1.02/lib/File/Path/Expand.pm)
+  - [File::MimeInfo](http://search.cpan.org/~michielb/File-MimeInfo-0.21/lib/File/MimeInfo.pm)

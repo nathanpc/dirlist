@@ -12,6 +12,7 @@ use Mojolicious::Lite;
 use YAML::Tiny;
 use URI::Escape;
 use File::Path::Expand;
+use File::MimeInfo;
 
 # Load settings.
 my $settings = YAML::Tiny->read("settings.yml");
@@ -114,6 +115,11 @@ sub list_dir {
 			$dirlist->{$ids[$i]}->{"size"} = $size;
 		} else {
 			$dirlist->{$ids[$i]}->{"type"} = "file";
+			my $mime = mimetype($full_path);
+			if (defined($mime)) {
+				# Get the first part of the MIME Type.
+				$dirlist->{$ids[$i]}->{"type"} = (split("/", $mime))[0];
+			}
 
 			# Get size.
 			$dirlist->{$ids[$i]}->{"size"} = -s $full_path;
