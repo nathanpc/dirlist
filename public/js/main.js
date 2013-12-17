@@ -62,6 +62,12 @@ dirlist.load_roots = function (auto_open) {
 	req.send();
 }
 
+/**
+ *  Load a folder.
+ *
+ *  @param path Path to the folder.
+ *  @param root Root name.
+ */
 dirlist.load_folder = function (path, root) {
 	if (root === undefined) {
 		root = dirlist.current_root;
@@ -108,11 +114,21 @@ dirlist.load_folder = function (path, root) {
 	req.send();
 }
 
+/**
+ *  Selects a Root.
+ *
+ *  @param root Root name.
+ */
 dirlist.select_root = function (root) {
 	dirlist.current_root = root;
 	dirlist.load_folder("/");
 }
 
+/**
+ *  Sets a working path.
+ *
+ *  @param path Path to set.
+ */
 dirlist.set_path = function (path) {
 	var path_label = document.getElementById("path");
 	var folders = null;
@@ -128,8 +144,6 @@ dirlist.set_path = function (path) {
 	dirlist.current_path = path;
 	path_label.innerHTML = "";
 
-	console.log(folders);
-
 	// Populate the menu.
 	for (var i = 0; i < folders.length; i++) {
 		var li = document.createElement("li");
@@ -138,7 +152,7 @@ dirlist.set_path = function (path) {
 		a.setAttribute("href", "#");
 		a.innerText = folders[i];
 		a.onclick = function () {
-			//history thingy.
+			// TODO: history thingy.
 		}
 
 		li.appendChild(a);
