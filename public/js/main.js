@@ -7,8 +7,11 @@ var onload = function () {
 
 var dirlist = {};
 
-dirlist.current_root = null;
-dirlist.current_path = null;
+dirlist.current = {
+	root: null,
+	path: null,
+	contents: null
+};
 
 /**
  *  Load the roots list.
@@ -70,7 +73,7 @@ dirlist.load_roots = function (auto_open) {
  */
 dirlist.load_folder = function (path, root) {
 	if (root === undefined) {
-		root = dirlist.current_root;
+		root = dirlist.current.root;
 	}
 
 	var req = new XMLHttpRequest();
@@ -82,22 +85,17 @@ dirlist.load_folder = function (path, root) {
 		console.log(response);
 
 		// Set the path.
-		dirlist.set_path(path);
+		dirlist.set_path(path, response);
+
+		// Clear the grid.
+		var grid = document.getElementById("grid");
+		grid.innerHTML = "";
 
 		// Populate the grid.
-		/*for (var i = 0; i < roots.length; i++) {
-			var li = document.createElement("li");
-
-			var a = document.createElement("a");
-			a.setAttribute("href", "#");
-			a.innerText = roots[i];
-			a.onclick = function () {
-				console.log("Open root: " + this.innerText);
-			}
-
-			li.appendChild(a);
-			menu.appendChild(li);
-		}*/
+		for (var i = 0; i < response.ids.length; i++) {
+			var item = response.contents[response.ids[i]];
+			grid.appendChild(dirlist.build_box(response.ids[i], item));
+		}
 	}, false);
 
 	// Error
@@ -120,16 +118,19 @@ dirlist.load_folder = function (path, root) {
  *  @param root Root name.
  */
 dirlist.select_root = function (root) {
-	dirlist.current_root = root;
+	dirlist.current.root = root;
 	dirlist.load_folder("/");
+
+	// TODO: History thingy.
 }
 
 /**
  *  Sets a working path.
  *
  *  @param path Path to set.
+ *  @param contents Folder contents.
  */
-dirlist.set_path = function (path) {
+dirlist.set_path = function (path, contents) {
 	var path_label = document.getElementById("path");
 	var folders = null;
 
@@ -141,7 +142,8 @@ dirlist.set_path = function (path) {
 	folders = path.split("/");
 	folders[0] = "/";
 
-	dirlist.current_path = path;
+	dirlist.current.path = path;
+	dirlist.current.contents = contents;
 	path_label.innerHTML = "";
 
 	// Populate the menu.
@@ -158,4 +160,38 @@ dirlist.set_path = function (path) {
 		li.appendChild(a);
 		path_label.appendChild(li);
 	}
+}
+
+/**
+ *  Builds a box element.
+ *
+ *  @param id Item ID.
+ *  @param item Item properties.
+ *  @return Box element.
+ */
+dirlist.build_box = function (id, item) {
+	var box = document.createElement("div");
+	box.setAttribute("class", "box");
+	box.onclick = function () {
+		var name_field = this.getElementByClassName("name")[0];
+		// TODO: Get it's ID for the full path ID.
+		console.log(name_field);
+	}
+
+	var img = document.createElement("img");
+	img.setAttribute("src", "img/folder.png"); // TODO: Detect type.
+	box.appendChild(img);
+
+	var lbl_name = document.createElement("div");
+	lbl_name.setAttribute("class", "name");
+	lbl_name.setAttribute("id", id);
+	lbl_name.innerText = item.name;
+	box.appendChild(lbl_name);
+
+	var lbl_size = document.createElement("div");
+	lbl_size.setAttribute("class", "size");
+	lbl_size.innerText = item.size;  // TODO: Convert to a better size.
+	box.appendChild(lbl_size);
+
+	return box;
 }

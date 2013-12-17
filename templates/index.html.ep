@@ -62,7 +62,7 @@
 			</ol>
 
 			<!-- File browser grid -->
-			<div class="grid">
+			<div id="grid" class="grid">
 				<div class="box">
 					<img src="img/folder.png" />
 					<div class="name">Signal Path</div>
