@@ -114,11 +114,17 @@ sub list_dir {
 			find(sub { $size += -s if -f $_ }, $full_path);
 			$dirlist->{$ids[$i]}->{"size"} = $size;
 		} else {
+			# Get the file type from the MIME.
 			$dirlist->{$ids[$i]}->{"type"} = "file";
 			my $mime = mimetype($full_path);
 			if (defined($mime)) {
 				# Get the first part of the MIME Type.
 				$dirlist->{$ids[$i]}->{"type"} = (split("/", $mime))[0];
+			}
+
+			# Get a thumbnail.
+			if ($mime =~ /image/i) {
+				$dirlist->{$ids[$i]}->{"thumbnail"} = build_url($self, $root_name, $path, $contents[$i]);
 			}
 
 			# Get size.

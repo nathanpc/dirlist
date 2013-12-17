@@ -257,7 +257,8 @@ dirlist.build_box = function (id, item) {
 		icon += "file.png";
 		break;
 	case "image":
-		icon += "image.png";
+		//icon += "image.png";
+		icon = item.thumbnail;
 		break;
 	case "video":
 		icon += "video.png";
@@ -295,6 +296,9 @@ dirlist.build_box = function (id, item) {
 
 	var img = document.createElement("img");
 	img.setAttribute("src", icon);
+	if (item.thumbnail !== undefined) {
+		img.setAttribute("class", "img-thumbnail");
+	}
 	box.appendChild(img);
 
 	var lbl_name = document.createElement("div");
