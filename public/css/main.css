@@ -3,7 +3,11 @@ body {
 }
 
 .screen {
-	padding-top: 41px;
+	padding-top: 70px;
+}
+
+#Home > .breadcrumb {
+	margin-bottom: 0;
 }
 
 .grid {
