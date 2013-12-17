@@ -37,6 +37,12 @@ body {
 }
 
 .box > .name {
+	width: 106px;
+
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+
 	font-weight: bold;
 }
 

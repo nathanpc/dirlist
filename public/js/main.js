@@ -84,18 +84,9 @@ dirlist.load_folder = function (path, root) {
 		var response = JSON.parse(req.responseText);
 		console.log(response);
 
-		// Set the path.
+		// Set the path and populate the grid.
 		dirlist.set_path(path, response);
-
-		// Clear the grid.
-		var grid = document.getElementById("grid");
-		grid.innerHTML = "";
-
-		// Populate the grid.
-		for (var i = 0; i < response.ids.length; i++) {
-			var item = response.contents[response.ids[i]];
-			grid.appendChild(dirlist.build_box(response.ids[i], item));
-		}
+		dirlist.populate_grid(response);
 	}, false);
 
 	// Error
@@ -163,6 +154,29 @@ dirlist.set_path = function (path, contents) {
 }
 
 /**
+ *  Populate the grid.
+ *
+ *  @param list JSON response from the server.
+ *  @param sort Sort by?
+ */
+dirlist.populate_grid = function (list, sort) {
+	if (sort === undefined) {
+		// TODO: Get the value from localStorage.
+		// TODO: If it doesn't exist, create it and put "Name" in there.
+	}
+
+	// Clear the grid.
+	var grid = document.getElementById("grid");
+	grid.innerHTML = "";
+
+	// Populate the grid.
+	for (var i = 0; i < list.ids.length; i++) {
+		var item = list.contents[list.ids[i]];
+		grid.appendChild(dirlist.build_box(list.ids[i], item));
+	}
+}
+
+/**
  *  Builds a box element.
  *
  *  @param id Item ID.
@@ -173,7 +187,7 @@ dirlist.build_box = function (id, item) {
 	var box = document.createElement("div");
 	box.setAttribute("class", "box");
 	box.onclick = function () {
-		var name_field = this.getElementByClassName("name")[0];
+		var name_field = this.getElementsByClassName("name")[0];
 		// TODO: Get it's ID for the full path ID.
 		console.log(name_field);
 	}
