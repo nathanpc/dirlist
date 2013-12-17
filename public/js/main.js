@@ -157,10 +157,12 @@ dirlist.set_path = function (path, contents) {
  *  Sort the grid by.
  *
  *  @param type Sorting type.
+ *  @param ascending Sort ascending?
  */
-dirlist.sort_by = function (type) {
+dirlist.sort_by = function (type, ascending) {
 	// Save it.
 	localStorage.setItem("sort_type", type);
+	localStorage.setItem("sort_ascending", ascending.toString());
 
 	// Update the grid.
 	dirlist.populate_grid(dirlist.current.contents);
@@ -171,8 +173,9 @@ dirlist.sort_by = function (type) {
  *
  *  @param list JSON response from the server.
  *  @param sort Sort by?
+ *  @param ascending Sort ascending?
  */
-dirlist.populate_grid = function (list, sort) {
+dirlist.populate_grid = function (list, sort, ascending) {
 	if (sort === undefined) {
 		sort = localStorage.getItem("sort_type");
 
@@ -181,6 +184,18 @@ dirlist.populate_grid = function (list, sort) {
 			sort = "name";
 			localStorage.setItem("sort_type", "name");
 		}
+	}
+
+	if (ascending === undefined) {
+		ascending = localStorage.getItem("sort_ascending");
+
+		// No sort type set.
+		if (ascending === null) {
+			ascending = "true";
+			localStorage.setItem("sort_ascending", "true");
+		}
+
+		ascending = JSON.parse(ascending);
 	}
 
 	// Sort the list.
@@ -198,8 +213,10 @@ dirlist.populate_grid = function (list, sort) {
 				return 0;
 			}
 		});
+	}
 
-		// Make it descending.
+	// Descending?
+	if (!ascending) {
 		list.ids.reverse();
 	}
 
