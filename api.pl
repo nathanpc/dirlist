@@ -16,7 +16,6 @@ use File::Path::Expand;
 use File::MimeInfo;
 use Image::Magick;
 use File::Slurp;
-use FFmpeg::Thumbnail;
 
 # Load settings.
 my $settings = YAML::Tiny->read("settings.yml");
@@ -24,6 +23,23 @@ if (!defined($settings)) {
 	die YAML::Tiny->errstr;
 } else {
 	$settings = $settings->[0];
+}
+
+# Get the video duration.
+sub get_video_duration {
+	my ($path) = @_;
+
+	my $output = `avconv -i '$path' 2>&1 | grep --color=never Duration`;
+	my ($time_str) = $output =~ /([0-9]+:[0-9]{2}:[0-9]{2})/i;
+
+	my @nums = split(":", $time_str);
+	my $duration = 0;
+
+	$duration += $nums[0] * 3600;  # Hours
+	$duration += $nums[1] * 60;    # Minutes
+	$duration += $nums[2];         # Seconds
+
+	return $duration;
 }
 
 # Checks if a parameter was defined.
@@ -74,7 +90,7 @@ sub build_ids {
 	my @ids;
 
 	foreach my $item (@contents) {
-		$item =~ s/("|'|\.|\s)/_/gi;
+		$item =~ s/("|'|\.|\$|\s)/_/gi;
 		push(@ids, $item);
 	}
 
@@ -138,15 +154,22 @@ sub list_dir {
 						# Image thumbnail.
 						$image->Read($full_path);
 					} elsif ($mime =~ /video/i) {
-						# Video thumbnail.
-						my $ffmpeg = FFmpeg::Thumbnail->new({
-							video => $full_path
-						});
+						my $duration = 20;
+						my $tempfile = "/tmp/avconv_thumb_" . $ids[$i] . ".jpg";
 
-						# Get the thumbnail second at 33.5% of the video.
-						my $thumb_time = int(($ffmpeg->duration * 0.335) + 0.5);
+						# Make sure the path doesn't contain any special characters that could be interpreted by the shell command.
+						my $safe_path = $full_path;
+						$safe_path =~ s/\$/\\\$/gi;
+						$safe_path =~ s/\%/\\\%/gi;
 
-						$ffmpeg->create_thumbnail($thumb_time, $filename);
+						my $status = system("avconv -i \"$safe_path\" -y -ss $duration -an -f image2 -vframes 1 '$tempfile' >/dev/null");
+						if ($status != 0) {
+							# TODO: Move this whole thumbnail thing to its own function and return the appropriate base64 thing or undef.
+							#return undef;
+						}
+
+						$image->Read($tempfile);
+						unlink($tempfile);
 					}
 
 					# Scale image to a thumbnail.

@@ -14,4 +14,3 @@ This application requires the following packages to be installed:
   - [File::MimeInfo](http://search.cpan.org/~michielb/File-MimeInfo-0.21/lib/File/MimeInfo.pm)
   - [Image::Magick](http://www.imagemagick.org/script/perl-magick.php)
   - [File::Slurp](http://search.cpan.org/~uri/File-Slurp-9999.19/lib/File/Slurp.pm)
-  - [FFmpeg::Thumbnail](http://search.cpan.org/~bbqsauls/FFmpeg-Thumbnail-0.02/lib/FFmpeg/Thumbnail.pm)
