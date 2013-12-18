@@ -126,17 +126,28 @@ sub list_dir {
 			}
 
 			# Get a thumbnail.
-			my $image = Image::Magick->new();
-			if ($mime =~ /image/i) {
+			if ($mime =~ /(image)/) {#|video)/i) {
+				my $image = Image::Magick->new();
+				my $filename = "/tmp/dirlist_" . $ids[$i] . ".png";
+
+				if ($mime =~ /image/i) {
+					# Image thumbnail.
+					$image->Read($full_path);
+				} elsif ($mime =~ /video/i) {
+					#
+				}
+
 				# Scale image to a thumbnail.
-				$image->Read($full_path);
 				$image->Scale("200x200");
 
 				# Creating a temp file and getting image contents.
-				my $filename = "/tmp/" . $ids[$i] . ".png";
 				$image->Write(filename => $filename);
 				my $image_data = read_file($filename, binmode => ":raw");
 
+				# Remove the temp file.
+				unlink($filename);
+
+				# Base64 the data and send it.
 				$dirlist->{$ids[$i]}->{"thumbnail"} = "data:image/png;base64," . encode_base64($image_data);
 			}
 
