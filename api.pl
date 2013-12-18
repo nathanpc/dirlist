@@ -6,6 +6,7 @@
 use strict;
 use warnings;
 use File::Find;
+use MIME::Base64 qw(encode_base64);
 
 use Data::Dumper;
 use Mojolicious::Lite;
@@ -13,6 +14,8 @@ use YAML::Tiny;
 use URI::Escape;
 use File::Path::Expand;
 use File::MimeInfo;
+use Image::Magick;
+use File::Slurp;
 
 # Load settings.
 my $settings = YAML::Tiny->read("settings.yml");
@@ -123,8 +126,18 @@ sub list_dir {
 			}
 
 			# Get a thumbnail.
+			my $image = Image::Magick->new();
 			if ($mime =~ /image/i) {
-				$dirlist->{$ids[$i]}->{"thumbnail"} = build_url($self, $root_name, $path, $contents[$i]);
+				# Scale image to a thumbnail.
+				$image->Read($full_path);
+				$image->Scale("200x200");
+
+				# Creating a temp file and getting image contents.
+				my $filename = "/tmp/" . $ids[$i] . ".png";
+				$image->Write(filename => $filename);
+				my $image_data = read_file($filename, binmode => ":raw");
+
+				$dirlist->{$ids[$i]}->{"thumbnail"} = "data:image/png;base64," . encode_base64($image_data);
 			}
 
 			# Get size.

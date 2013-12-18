@@ -12,3 +12,5 @@ This application requires the following packages to be installed:
   - [URI::Escape](http://search.cpan.org/~gaas/URI-1.60/URI/Escape.pm)
   - [File::Path::Expand](http://search.cpan.org/~rclamp/File-Path-Expand-1.02/lib/File/Path/Expand.pm)
   - [File::MimeInfo](http://search.cpan.org/~michielb/File-MimeInfo-0.21/lib/File/MimeInfo.pm)
+  - [Image::Magick](http://www.imagemagick.org/script/perl-magick.php)
+  - [File::Slurp](http://search.cpan.org/~uri/File-Slurp-9999.19/lib/File/Slurp.pm)
