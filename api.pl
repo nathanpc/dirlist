@@ -16,6 +16,7 @@ use File::Path::Expand;
 use File::MimeInfo;
 use Image::Magick;
 use File::Slurp;
+use FFmpeg::Thumbnail;
 
 # Load settings.
 my $settings = YAML::Tiny->read("settings.yml");
@@ -126,26 +127,37 @@ sub list_dir {
 			}
 
 			# Get a thumbnail.
-			if ($mime =~ /(image)/) {#|video)/i) {
-				my $image = Image::Magick->new();
+			if ($mime =~ /(image|video)/i) {
 				my $filename = "/tmp/dirlist_" . $ids[$i] . ".png";
 
-				if ($mime =~ /image/i) {
-					# Image thumbnail.
-					$image->Read($full_path);
-				} elsif ($mime =~ /video/i) {
-					#
+				# Create the cache file if it doesn't exist.
+				unless (-e $filename) {
+					my $image = Image::Magick->new();
+
+					if ($mime =~ /image/i) {
+						# Image thumbnail.
+						$image->Read($full_path);
+					} elsif ($mime =~ /video/i) {
+						# Video thumbnail.
+						my $ffmpeg = FFmpeg::Thumbnail->new({
+							video => $full_path
+						});
+
+						# Get the thumbnail second at 33.5% of the video.
+						my $thumb_time = int(($ffmpeg->duration * 0.335) + 0.5);
+
+						$ffmpeg->create_thumbnail($thumb_time, $filename);
+					}
+
+					# Scale image to a thumbnail.
+					$image->Scale("200x200");
+
+					# Creating a temp file.
+					$image->Write(filename => $filename);
 				}
 
-				# Scale image to a thumbnail.
-				$image->Scale("200x200");
-
-				# Creating a temp file and getting image contents.
-				$image->Write(filename => $filename);
+				# Get image data.
 				my $image_data = read_file($filename, binmode => ":raw");
-
-				# Remove the temp file.
-				unlink($filename);
 
 				# Base64 the data and send it.
 				$dirlist->{$ids[$i]}->{"thumbnail"} = "data:image/png;base64," . encode_base64($image_data);

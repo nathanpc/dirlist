@@ -261,7 +261,8 @@ dirlist.build_box = function (id, item) {
 		icon = item.thumbnail;
 		break;
 	case "video":
-		icon += "video.png";
+		//icon += "video.png";
+		icon = item.thumbnail;
 		break;
 	case "audio":
 		icon += "audio.png";
