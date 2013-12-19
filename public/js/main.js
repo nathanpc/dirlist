@@ -162,6 +162,22 @@ dirlist.set_path = function (path, contents) {
 }
 
 /**
+ *  Go up in the directory tree.
+ */
+dirlist.up = function () {
+	var folders = dirlist.current.path.split("/");
+	folders = folders.slice(0, folders.length - 1);
+	var path = folders.join("/");
+
+	// Root path.
+	if (path === "") {
+		path = "/";
+	}
+
+	dirlist.load_folder(path);
+}
+
+/**
  *  Sort the grid by.
  *
  *  @param type Sorting type.

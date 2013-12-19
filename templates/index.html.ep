@@ -48,7 +48,8 @@
 						<!-- Folder browse control -->
 						<div class="btn-group">
 							<button type="button"
-									class="btn btn-default navbar-btn">
+									class="btn btn-default navbar-btn"
+									onclick="dirlist.up();">
 								<span class="glyphicon glyphicon-chevron-up"></span>
 							</button>
 						</div>
