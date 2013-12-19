@@ -257,12 +257,10 @@ dirlist.build_box = function (id, item) {
 		icon += "file.png";
 		break;
 	case "image":
-		//icon += "image.png";
-		icon = item.thumbnail;
+		icon += "image.png";
 		break;
 	case "video":
-		//icon += "video.png";
-		icon = item.thumbnail;
+		icon += "video.png";
 		break;
 	case "audio":
 		icon += "audio.png";
@@ -296,10 +294,11 @@ dirlist.build_box = function (id, item) {
 	}
 
 	var img = document.createElement("img");
-	img.setAttribute("src", icon);
 	if (item.thumbnail !== undefined) {
+		icon = item.thumbnail;
 		img.setAttribute("class", "img-thumbnail");
 	}
+	img.setAttribute("src", icon);
 	box.appendChild(img);
 
 	var lbl_name = document.createElement("div");

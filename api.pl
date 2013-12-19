@@ -25,21 +25,54 @@ if (!defined($settings)) {
 	$settings = $settings->[0];
 }
 
-# Get the video duration.
-sub get_video_duration {
-	my ($path) = @_;
+# Generates a Base64-encoded thumbnail.
+sub generate_thumbnail {
+	my ($mime, $id, $full_path) = @_;
+	if ($mime =~ /(image|video)/i) {
+		my $filename = "/tmp/dirlist_" . $id . ".png";
 
-	my $output = `avconv -i '$path' 2>&1 | grep --color=never Duration`;
-	my ($time_str) = $output =~ /([0-9]+:[0-9]{2}:[0-9]{2})/i;
+		# Create the cache file if it doesn't exist.
+		unless (-e $filename) {
+			my $image = Image::Magick->new();
 
-	my @nums = split(":", $time_str);
-	my $duration = 0;
+			if ($mime =~ /image/i) {
+				# Image thumbnail.
+				print "Generating a thumbnail for the image: $full_path\n";
+				$image->Read($full_path);
+			} elsif ($mime =~ /video/i) {
+				my $duration = 20;
+				my $tempfile = "/tmp/avconv_thumb_" . $id . ".jpg";
 
-	$duration += $nums[0] * 3600;  # Hours
-	$duration += $nums[1] * 60;    # Minutes
-	$duration += $nums[2];         # Seconds
+				# Make sure the path doesn't contain any special characters that could be interpreted by the shell command.
+				my $safe_path = $full_path;
+				$safe_path =~ s/\$/\\\$/gi;
+				$safe_path =~ s/\%/\\\%/gi;
 
-	return $duration;
+				print "Generating a thumbnail for the video: $full_path\n";
+
+				my $status = system("avconv -i \"$safe_path\" -y -ss $duration -an -f image2 -vframes 1 '$tempfile' -loglevel quiet");
+				if ($status != 0) {
+					print "[ERROR] Couldn't generate thumbnail for '$full_path'\n";
+					return undef;
+				}
+
+				$image->Read($tempfile);
+				unlink($tempfile);
+			}
+
+			# Scale image to a thumbnail.
+			$image->Scale("200x200");
+
+			# Creating a temp file.
+			$image->Write(filename => $filename);
+		}
+
+		# Get image data.
+		my $image_data = read_file($filename, binmode => ":raw");
+
+		# Base64 the data.
+		return "data:image/png;base64," . encode_base64($image_data);
+	}
 }
 
 # Checks if a parameter was defined.
@@ -143,53 +176,16 @@ sub list_dir {
 			}
 
 			# Get a thumbnail.
-			if ($mime =~ /(image|video)/i) {
-				my $filename = "/tmp/dirlist_" . $ids[$i] . ".png";
-
-				# Create the cache file if it doesn't exist.
-				unless (-e $filename) {
-					my $image = Image::Magick->new();
-
-					if ($mime =~ /image/i) {
-						# Image thumbnail.
-						$image->Read($full_path);
-					} elsif ($mime =~ /video/i) {
-						my $duration = 20;
-						my $tempfile = "/tmp/avconv_thumb_" . $ids[$i] . ".jpg";
-
-						# Make sure the path doesn't contain any special characters that could be interpreted by the shell command.
-						my $safe_path = $full_path;
-						$safe_path =~ s/\$/\\\$/gi;
-						$safe_path =~ s/\%/\\\%/gi;
-
-						my $status = system("avconv -i \"$safe_path\" -y -ss $duration -an -f image2 -vframes 1 '$tempfile' >/dev/null");
-						if ($status != 0) {
-							# TODO: Move this whole thumbnail thing to its own function and return the appropriate base64 thing or undef.
-							#return undef;
-						}
-
-						$image->Read($tempfile);
-						unlink($tempfile);
-					}
-
-					# Scale image to a thumbnail.
-					$image->Scale("200x200");
-
-					# Creating a temp file.
-					$image->Write(filename => $filename);
-				}
-
-				# Get image data.
-				my $image_data = read_file($filename, binmode => ":raw");
-
-				# Base64 the data and send it.
-				$dirlist->{$ids[$i]}->{"thumbnail"} = "data:image/png;base64," . encode_base64($image_data);
+			my $thumbnail = generate_thumbnail($mime, $ids[$i], $full_path);
+			if (defined($thumbnail)) {
+				$dirlist->{$ids[$i]}->{"thumbnail"} = $thumbnail;
 			}
 
 			# Get size.
 			$dirlist->{$ids[$i]}->{"size"} = -s $full_path;
 		}
 
+		# Get URL.
 		$dirlist->{$ids[$i]}->{"href"} = build_url($self, $root_name, $path, $contents[$i]);
 	}
 
