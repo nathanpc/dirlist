@@ -28,6 +28,7 @@ if (!defined($settings)) {
 # Generates a Base64-encoded thumbnail.
 sub generate_thumbnail {
 	my ($mime, $id, $full_path) = @_;
+
 	if ($mime =~ /(image|video)/i) {
 		my $filename = "/tmp/dirlist_" . $id . ".png";
 
@@ -73,6 +74,8 @@ sub generate_thumbnail {
 		# Base64 the data.
 		return "data:image/png;base64," . encode_base64($image_data);
 	}
+
+	return undef;
 }
 
 # Checks if a parameter was defined.
