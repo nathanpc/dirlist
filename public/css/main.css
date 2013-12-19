@@ -6,6 +6,9 @@ body {
 	padding-top: 70px;
 }
 
+
+/* Navbar buttons */
+
 .collapse.navbar-collapse > .btn-group:first-of-type {
 	margin-left: 0;
 }
@@ -14,9 +17,15 @@ body {
 	margin-left: 10px;
 }
 
+
+/* Path indicator */
+
 #Home > .breadcrumb {
 	margin-bottom: 0;
 }
+
+
+/* Grid */
 
 .grid {
 	width: 100%;
@@ -39,8 +48,10 @@ body {
 	background: rgb(231, 231, 231);
 }
 
+
+/* Item box */
+
 .box > img {
-	/*display: -webkit-box;*/
 	max-width: 70px;
 }
 
@@ -57,5 +68,27 @@ body {
 .box > .size {
 	font-size: 12px;
 	line-height: 16px;
+	color: rgb(121, 121, 121);
+}
+
+
+/* Modal */
+
+#preview-body > .media-preview-container {
+	text-align: center;
+	margin-bottom: 20px;
+}
+
+#preview-body > .media-preview-container > .media {
+	max-width: 558px;
+}
+
+#preview-body > .filename {
+	font-weight: bold;
+	font-size: 17px;
+}
+
+#preview-body > .size {
+	line-height: 14px;
 	color: rgb(121, 121, 121);
 }

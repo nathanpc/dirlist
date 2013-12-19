@@ -5,6 +5,22 @@ var onload = function () {
 	dirlist.load_roots(true);
 }
 
+var human_size = function (bytes, precision) {
+	var sizes = ["bytes", "kB", "MB", "GB", "TB"];
+	var size = "0 bytes";
+
+	if (precision === undefined) {
+		precision = 4;
+	}
+
+	if (bytes !== 0) {
+		var i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
+		size = (bytes / Math.pow(1024, i)).toPrecision(precision) + ' ' + sizes[i];
+	}
+
+	return size;
+}
+
 var dirlist = {};
 
 dirlist.current = {
@@ -262,6 +278,63 @@ dirlist.populate_grid = function (list, sort, ascending) {
 }
 
 /**
+ *  Show the preview modal.
+ *
+ *  @param item JSON item.
+ */
+dirlist.show_preview = function (item) {
+	// Set the title.
+	document.getElementById("preview-title").innerText = item.name.replace(/\.[\w]+$/i, "");
+
+	// Stuff in the body.
+	var modal = document.getElementById("preview-body");
+	modal.innerHTML = "";
+
+	// Media to preview.
+	if (item.type === "image" || item.type === "video" || item.type === "audio") {
+		var container = document.createElement("div");
+		container.setAttribute("class", "media-preview-container");
+
+		var media;
+		if (item.type === "image") {
+			media = document.createElement("img");
+		} else if (item.type === "video") {
+			media = document.createElement("video");
+			media.setAttribute("controls", "controls");
+		} else if (item.type === "audio") {
+			media = document.createElement("audio");
+			media.setAttribute("controls", "controls");
+		}
+
+		// General attributes.
+		media.setAttribute("class", "media");
+		media.setAttribute("src", item.href);
+
+		// Append it.
+		container.appendChild(media);
+		modal.appendChild(container);
+	}
+
+	// File name.
+	var name = document.createElement("div");
+	name.setAttribute("class", "filename");
+	name.innerText = item.name;
+	modal.appendChild(name);
+
+	var size = document.createElement("div");
+	size.setAttribute("class", "size");
+	size.innerText = human_size(item.size, 6);
+	modal.appendChild(size);
+
+	// Set the button action.
+	document.getElementById("preview-button").onclick = function () {
+		window.open(item.href, "_blank");
+	}
+
+	$("#preview-modal").modal("show");
+}
+
+/**
  *  Builds a box element.
  *
  *  @param id Item ID.
@@ -296,12 +369,7 @@ dirlist.build_box = function (id, item) {
 	}
 
 	// Human-readable size.
-	var sizes = ["bytes", "kB", "MB", "GB", "TB"];
-	var size = "0 bytes";
-	if (item.size !== 0) {
-		var i = parseInt(Math.floor(Math.log(item.size) / Math.log(1024)));
-		size = (item.size / Math.pow(1024, i)).toPrecision(4) + ' ' + sizes[i];
-	}
+	var size = human_size(item.size);
 
 	var box = document.createElement("div");
 	box.setAttribute("class", "box");
@@ -312,6 +380,15 @@ dirlist.build_box = function (id, item) {
 			var item = dirlist.current.contents.contents[name];
 
 			dirlist.load_folder(dirlist.current.path + "/" + item.name);
+		}
+	} else {
+		box.onclick = function () {
+			var name = this.getElementsByClassName("name")[0].getAttribute("id");
+			var item = dirlist.current.contents.contents[name];
+
+			console.log("Preview: " + item.name);
+			console.log(item);
+			dirlist.show_preview(item);
 		}
 	}
 
