@@ -47,7 +47,12 @@ dirlist.load_roots = function (auto_open) {
 		}
 
 		if (auto_open) {
-			dirlist.select_root(roots[0]);
+			var auto_root = localStorage.getItem("root");
+			if (auto_root === null) {
+				auto_root = roots[0];
+			}
+
+			dirlist.select_root(auto_root);
 		}
 	}, false);
 
@@ -112,7 +117,8 @@ dirlist.select_root = function (root) {
 	dirlist.current.root = root;
 	dirlist.load_folder("/");
 
-	// TODO: History thingy.
+	// Save it.
+	localStorage.setItem("root", root);
 }
 
 /**

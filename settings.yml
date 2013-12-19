@@ -1,12 +1,17 @@
 ---
 roots:
-  webroot:
+  Webroot:
     type: "normal"
     path:
       system: "~/Sites"
       web: "/"
-  videos:
+  Videos:
     type: "media"
     path:
       system: "~/Videos"
       web: "/Videos"
+  Music:
+    type: "media"
+    path:
+      system: "/media/nathanpc/Second-HDD/Music"
+      web: "/Music"
