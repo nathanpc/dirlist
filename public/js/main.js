@@ -321,10 +321,46 @@ dirlist.show_preview = function (item) {
 	name.innerText = item.name;
 	modal.appendChild(name);
 
+	// File size.
 	var size = document.createElement("div");
 	size.setAttribute("class", "size");
 	size.innerText = human_size(item.size, 6);
 	modal.appendChild(size);
+
+	// Extra data.
+	if (item.extra !== undefined) {
+		var container = document.createElement("div");
+		container.setAttribute("class", "extra-container");
+		var extra = document.createElement("ul");
+
+		if (item.type === "image") {
+			var categories = ["Camera", "Image", "Other", "Unknown"];
+
+			for (var i = 0; i < categories.length; i++) {
+				var category = document.createElement("li");
+				category.innerHTML = "<b>" + categories[i] + "</b>";
+
+				var prop = item.extra[categories[i].toLowerCase()];
+				var nested = document.createElement("ul");
+				nested.setAttribute("class", "nested");
+
+				for (var key in prop) {
+					if (prop.hasOwnProperty(key)) {
+						var li = document.createElement("li");
+						li.innerHTML = "<b>" + key + "</b> " + prop[key];
+
+						nested.appendChild(li);
+					}
+				}
+
+				category.appendChild(nested);
+				extra.appendChild(category);
+			}
+		}
+
+		container.appendChild(extra);
+		modal.appendChild(container);
+	}
 
 	// Set the button action.
 	document.getElementById("preview-button").onclick = function () {

@@ -16,6 +16,7 @@ use File::Path::Expand;
 use File::MimeInfo;
 use Image::Magick;
 use File::Slurp;
+use Image::EXIF;
 
 # Load settings.
 my $settings = YAML::Tiny->read("settings.yml");
@@ -73,6 +74,19 @@ sub generate_thumbnail {
 
 		# Base64 the data.
 		return "data:image/png;base64," . encode_base64($image_data);
+	}
+
+	return undef;
+}
+
+# Get extra data from the file.
+sub get_extra_data {
+	my ($mime, $full_path) = @_;
+
+	if ($mime =~ /image\/jpeg/i) {
+		# Extract EXIF data from the image.
+		my $exif = Image::EXIF->new($full_path);
+		return $exif->get_all_info();
 	}
 
 	return undef;
@@ -182,6 +196,12 @@ sub list_dir {
 			my $thumbnail = generate_thumbnail($mime, $ids[$i], $full_path);
 			if (defined($thumbnail)) {
 				$dirlist->{$ids[$i]}->{"thumbnail"} = $thumbnail;
+			}
+
+			# Get extra data.
+			my $extra = get_extra_data($mime, $full_path);
+			if (defined($extra)) {
+				$dirlist->{$ids[$i]}->{"extra"} = $extra;
 			}
 
 			# Get size.

@@ -92,3 +92,31 @@ body {
 	line-height: 14px;
 	color: rgb(121, 121, 121);
 }
+
+#preview-body > .extra-container {
+	padding-top: 20px;
+}
+
+#preview-body > .extra-container > ul {
+	padding: 0;
+	margin: 0;
+
+	list-style: none;
+}
+
+#preview-body > .extra-container > ul > li {
+	margin-bottom: 10px;
+}
+
+#preview-body > .extra-container > ul > li:last-of-type {
+	margin-bottom: 0;
+}
+
+#preview-body > .extra-container .nested {
+	list-style: none;
+	padding-left: 15px;
+}
+
+#preview-body > .extra-container .nested > li > b {
+	color: rgb(97, 97, 97);
+}

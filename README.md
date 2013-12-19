@@ -14,3 +14,4 @@ This application requires the following packages to be installed:
   - [File::MimeInfo](http://search.cpan.org/~michielb/File-MimeInfo-0.21/lib/File/MimeInfo.pm)
   - [Image::Magick](http://www.imagemagick.org/script/perl-magick.php)
   - [File::Slurp](http://search.cpan.org/~uri/File-Slurp-9999.19/lib/File/Slurp.pm)
+  - [Image::EXIF](http://search.cpan.org/~ccpro/Image-EXIF-0.99.4/EXIF.pm)
