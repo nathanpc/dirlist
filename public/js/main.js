@@ -53,9 +53,9 @@ dirlist.load_roots = function (auto_open) {
 
 			var a = document.createElement("a");
 			a.setAttribute("href", "#");
-			a.innerText = roots[i];
+			a.innerHTML = roots[i];
 			a.onclick = function () {
-				dirlist.select_root(this.innerText);
+				dirlist.select_root(this.innerHTML);
 			}
 
 			li.appendChild(a);
@@ -173,7 +173,7 @@ dirlist.set_path = function (path, contents) {
 		var a = document.createElement("a");
 		a.setAttribute("href", "#");
 		a.setAttribute("id", path_arr.join("/"));
-		a.innerText = folders[i];
+		a.innerHTML = folders[i];
 		a.onclick = function () {
 			dirlist.load_folder(this.getAttribute("id"));
 		}
@@ -284,7 +284,7 @@ dirlist.populate_grid = function (list, sort, ascending) {
  */
 dirlist.show_preview = function (item) {
 	// Set the title.
-	document.getElementById("preview-title").innerText = item.name.replace(/\.[\w]+$/i, "");
+	document.getElementById("preview-title").innerHTML = item.name.replace(/\.[\w]+$/i, "");
 
 	// Stuff in the body.
 	var modal = document.getElementById("preview-body");
@@ -318,13 +318,13 @@ dirlist.show_preview = function (item) {
 	// File name.
 	var name = document.createElement("div");
 	name.setAttribute("class", "filename");
-	name.innerText = item.name;
+	name.innerHTML = item.name;
 	modal.appendChild(name);
 
 	// File size.
 	var size = document.createElement("div");
 	size.setAttribute("class", "size");
-	size.innerText = human_size(item.size, 6);
+	size.innerHTML = human_size(item.size, 6);
 	modal.appendChild(size);
 
 	// Extra data.
@@ -452,12 +452,12 @@ dirlist.build_box = function (id, item) {
 	var lbl_name = document.createElement("div");
 	lbl_name.setAttribute("class", "name");
 	lbl_name.setAttribute("id", id);
-	lbl_name.innerText = item.name;
+	lbl_name.innerHTML = item.name;
 	box.appendChild(lbl_name);
 
 	var lbl_size = document.createElement("div");
 	lbl_size.setAttribute("class", "size");
-	lbl_size.innerText = size;
+	lbl_size.innerHTML = size;
 	box.appendChild(lbl_size);
 
 	return box;
