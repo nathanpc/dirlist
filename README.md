@@ -15,3 +15,4 @@ This application requires the following packages to be installed:
   - [Image::Magick](http://www.imagemagick.org/script/perl-magick.php)
   - [File::Slurp](http://search.cpan.org/~uri/File-Slurp-9999.19/lib/File/Slurp.pm)
   - [Image::EXIF](http://search.cpan.org/~ccpro/Image-EXIF-0.99.4/EXIF.pm)
+  - [PHP::Strings](http://search.cpan.org/~kudarasp/PHP-Strings-0.28/Strings.pm)

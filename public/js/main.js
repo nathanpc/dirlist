@@ -333,29 +333,42 @@ dirlist.show_preview = function (item) {
 		container.setAttribute("class", "extra-container");
 		var extra = document.createElement("ul");
 
+		// Do it this way to have a better organization than the random sort of Perl's hashes.
+		var categories = [];
 		if (item.type === "image") {
-			var categories = ["Camera", "Image", "Other", "Unknown"];
-
-			for (var i = 0; i < categories.length; i++) {
-				var category = document.createElement("li");
-				category.innerHTML = "<b>" + categories[i] + "</b>";
-
-				var prop = item.extra[categories[i].toLowerCase()];
-				var nested = document.createElement("ul");
-				nested.setAttribute("class", "nested");
-
-				for (var key in prop) {
-					if (prop.hasOwnProperty(key)) {
-						var li = document.createElement("li");
-						li.innerHTML = "<b>" + key + "</b> " + prop[key];
-
-						nested.appendChild(li);
-					}
-				}
-
-				category.appendChild(nested);
-				extra.appendChild(category);
+			categories = ["Camera", "Image", "Other", "Unknown"];
+		} else if (item.type === "video") {
+			//categories = ["General", "Specifications"];
+			categories = ["Specifications"];
+		} else if (item.type === "audio") {
+			// TODO: Audio.
+		} else {
+			// What the fuck would this be?
+			for (var key in item.extra) {
+				categories.push(key);
 			}
+		}
+
+		// Loop through the categories and populate the list.
+		for (var i = 0; i < categories.length; i++) {
+			var category = document.createElement("li");
+			category.innerHTML = "<b>" + categories[i] + "</b>";
+
+			var prop = item.extra[categories[i].toLowerCase()];
+			var nested = document.createElement("ul");
+			nested.setAttribute("class", "nested");
+
+			for (var key in prop) {
+				if (prop.hasOwnProperty(key)) {
+					var li = document.createElement("li");
+					li.innerHTML = "<b>" + key + "</b> " + prop[key];
+
+					nested.appendChild(li);
+				}
+			}
+
+			category.appendChild(nested);
+			extra.appendChild(category);
 		}
 
 		container.appendChild(extra);
