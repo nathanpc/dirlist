@@ -21,7 +21,7 @@ use PHP::Strings qw(addcslashes);
 sub safe_path {
 	my ($path) = @_;
 
-	return addcslashes($path, ' \$%#@');
+	return addcslashes($path, '\$');
 }
 
 # Generates a Base64-encoded thumbnail.
@@ -84,7 +84,7 @@ sub get_extra_data {
 	} elsif ($mime =~ /video/i) {
 		# Extract any data from the video.
 		my $safe_path = safe_path($full_path);
-		my $output = `mplayer -identify -frames 0 -vo null -ao null -nosound -nolirc $safe_path`;
+		my $output = `mplayer -identify -frames 0 -vo null -ao null -nosound -nolirc "$safe_path"`;
 
 		# Go through each line and check if it's important.
 		my @lines = split("\n", $output);
