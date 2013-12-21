@@ -338,8 +338,7 @@ dirlist.show_preview = function (item) {
 		if (item.type === "image") {
 			categories = ["Camera", "Image", "Other", "Unknown"];
 		} else if (item.type === "video") {
-			//categories = ["General", "Specifications"];
-			categories = ["Specifications"];
+			categories = ["General", "Specifications"];
 		} else if (item.type === "audio") {
 			// TODO: Audio.
 		} else {
@@ -362,6 +361,11 @@ dirlist.show_preview = function (item) {
 				if (prop.hasOwnProperty(key)) {
 					var li = document.createElement("li");
 					li.innerHTML = "<b>" + key + "</b> " + prop[key];
+
+					// Reset the title if the extra has one.
+					if (key.toLowerCase() === "title") {
+						document.getElementById("preview-title").innerHTML = prop[key];
+					}
 
 					nested.appendChild(li);
 				}

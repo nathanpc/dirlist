@@ -16,6 +16,7 @@ use File::Slurp;
 use Image::Magick;
 use Image::EXIF;
 use PHP::Strings qw(addcslashes);
+use String::Util qw(trim);
 
 # Make sure the path doesn't contain any special characters that could be interpreted by the shell command.
 sub safe_path {
@@ -123,7 +124,16 @@ sub get_extra_data {
 						$specs->{$key} = $value;
 					}
 				}
-			#} elsif () {
+			} elsif ($line =~ /^\s[\w]+:(.+)$/) {
+				# General ID3-like video tags.
+				my ($key, $value) = split(": ", trim($line));
+
+				# Ignore the useless tags.
+				if ($key !~ /version|brand(s)?/i) {
+					# Prettify the key.
+					$key = join(" ", map(ucfirst, split("_", $key)));
+					$movie_info->{$key} = $value;
+				}
 			} elsif ($line =~ /^=+/) {
 				# We don't care about anything after this point.
 				last;

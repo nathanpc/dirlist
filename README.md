@@ -16,6 +16,7 @@ This application requires the following Perl modules:
   - [File::Slurp](http://search.cpan.org/~uri/File-Slurp-9999.19/lib/File/Slurp.pm)
   - [Image::EXIF](http://search.cpan.org/~ccpro/Image-EXIF-0.99.4/EXIF.pm)
   - [PHP::Strings](http://search.cpan.org/~kudarasp/PHP-Strings-0.28/Strings.pm)
+  - [String::Util](http://search.cpan.org/~miko/String-Util-1.21/lib/String/Util.pm)
 
 Also it'll require you to have the following applications installed in your system:
 
