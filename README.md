@@ -5,7 +5,7 @@ A fully-featured directory listing web application.
 
 ## Dependencies
 
-This application requires the following packages to be installed:
+This application requires the following Perl modules:
 
   - [Mojolicious::Lite](http://mojolicio.us/)
   - [YAML::Tiny](http://search.cpan.org/dist/YAML-Tiny/lib/YAML/Tiny.pm)
@@ -16,3 +16,8 @@ This application requires the following packages to be installed:
   - [File::Slurp](http://search.cpan.org/~uri/File-Slurp-9999.19/lib/File/Slurp.pm)
   - [Image::EXIF](http://search.cpan.org/~ccpro/Image-EXIF-0.99.4/EXIF.pm)
   - [PHP::Strings](http://search.cpan.org/~kudarasp/PHP-Strings-0.28/Strings.pm)
+
+Also it'll require you to have the following applications installed in your system:
+
+  - [FFmpeg](http://www.ffmpeg.org/)
+  - [Mplayer](http://www.mplayerhq.hu/design7/news.html)
