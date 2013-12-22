@@ -17,6 +17,7 @@ use Image::Magick;
 use Image::EXIF;
 use PHP::Strings qw(addcslashes);
 use String::Util qw(trim);
+use MP3::Tag;
 
 # Make sure the path doesn't contain any special characters that could be interpreted by the shell command.
 sub safe_path {
@@ -29,7 +30,7 @@ sub safe_path {
 sub generate_thumbnail {
 	my ($mime, $id, $full_path) = @_;
 
-	if ($mime =~ /(image|video)/i) {
+	if ($mime =~ /(image|video|audio\/mpeg)/i) {
 		my $filename = "/tmp/dirlist_" . $id . ".png";
 
 		# Create the cache file if it doesn't exist.
@@ -41,6 +42,7 @@ sub generate_thumbnail {
 				print "Generating a thumbnail for the image: $full_path\n";
 				$image->Read($full_path);
 			} elsif ($mime =~ /video/i) {
+				# Video thumbnail.
 				my $duration = 20;
 				my $tempfile = "/tmp/avconv_thumb_" . $id . ".jpg";
 				my $safe_path = safe_path($full_path);
@@ -55,6 +57,23 @@ sub generate_thumbnail {
 
 				$image->Read($tempfile);
 				unlink($tempfile);
+			} elsif ($mime =~ /audio\/mpeg/i) {
+				# Music thumbnail.
+				my $mp3 = MP3::Tag->new($full_path);
+				$mp3->get_tags();
+				if (!defined($mp3->{ID3v2})) {
+					return undef;
+				}
+
+				my $apic = $mp3->{ID3v2}->get_frame("APIC");
+				my $imgdata = $$apic{"_Data"};
+
+				if (!$imgdata) {
+					# Thumbnail not found.
+					return undef;
+				}
+
+				$image->BlobToImage($imgdata);
 			}
 
 			# Scale image to a thumbnail.
@@ -143,6 +162,23 @@ sub get_extra_data {
 		return {
 			"general" => $movie_info,
 			"specifications" => $specs
+		};
+	} elsif ($mime =~ /audio\/mpeg/i) {
+		# Music ID3 tag extraction.
+		my $mp3 = MP3::Tag->new($full_path);
+		my ($title, $track, $artist, $album, $comment, $year, $genre) = $mp3->autoinfo();
+		$mp3->close();
+
+		return {
+			"details" => {
+				"Title" => $title,
+				"Album" => $album,
+				"Artist" => $artist,
+				"Track" => $track,
+				"Year" => $year,
+				"Genre" => $genre,
+				"Comment" => $comment
+			}
 		};
 	}
 

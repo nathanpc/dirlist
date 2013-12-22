@@ -304,6 +304,14 @@ dirlist.show_preview = function (item) {
 		} else if (item.type === "audio") {
 			media = document.createElement("audio");
 			media.setAttribute("controls", "controls");
+
+			if (item.thumbnail !== undefined) {
+				var cover = document.createElement("img");
+				cover.setAttribute("src", item.thumbnail);
+
+				container.appendChild(cover);
+				container.appendChild(document.createElement("br"));
+			}
 		}
 
 		// General attributes.
@@ -340,7 +348,7 @@ dirlist.show_preview = function (item) {
 		} else if (item.type === "video") {
 			categories = ["General", "Specifications"];
 		} else if (item.type === "audio") {
-			// TODO: Audio.
+			categories = ["Details"];
 		} else {
 			// What the fuck would this be?
 			for (var key in item.extra) {

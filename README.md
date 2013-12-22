@@ -17,6 +17,7 @@ This application requires the following Perl modules:
   - [Image::EXIF](http://search.cpan.org/~ccpro/Image-EXIF-0.99.4/EXIF.pm)
   - [PHP::Strings](http://search.cpan.org/~kudarasp/PHP-Strings-0.28/Strings.pm)
   - [String::Util](http://search.cpan.org/~miko/String-Util-1.21/lib/String/Util.pm)
+  - [MP3::Tag](http://search.cpan.org/~ilyaz/MP3-Tag-0.92/Tag/ID3v2.pm)
 
 Also it'll require you to have the following applications installed in your system:
 
