@@ -61,3 +61,6 @@ install_prereqs(@modules);
 # Check if the required programs are installed.
 my @programs = ("ffmpeg", "mplayer");
 program_installed(@programs);
+
+# Just a little tip for the user.
+print colored("If you want to have the logs stored you should to create a directory called 'log'\n", "blue");
