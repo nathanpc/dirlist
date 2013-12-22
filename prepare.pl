@@ -7,6 +7,7 @@ use strict;
 use warnings;
 
 use CPAN;
+use Term::ANSIColor;
 
 my $name = 'dirlist+';
 my $version = '0.1';
@@ -22,9 +23,21 @@ sub about {
 sub install_prereqs {
 	my (@prereq) = @_;
 
+	print colored("Installing the required Perl modules\n", "green");
 	foreach my $module (@prereq) {
-		print "\nInstalling $module\n";
+		print colored("\nInstalling $module\n", "blue");
 		CPAN::Shell->force("install", $module);
+	}
+}
+
+# Check if a program is installed.
+sub program_installed {
+	my (@programs) = @_;
+
+	foreach my $program (@programs) {
+		if (`which $program` eq '') {
+			print colored("'$program' wasn't detected in your system, please install it to be able to run dirlist+.\n", "red");
+		}
 	}
 }
 
@@ -43,7 +56,8 @@ my @modules = ("File::Path::Expand",
 			   "YAML::Tiny",
 			   "Mojolicious::Lite",
 			   "Image::Magick");
-print "Installing the required Perl modules\n";
 install_prereqs(@modules);
 
-# TODO: Check if the executables (ffmpeg and mplayer) exist.
+# Check if the required programs are installed.
+my @programs = ("ffmpeg", "mplayer");
+program_installed(@programs);
