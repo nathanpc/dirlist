@@ -113,7 +113,7 @@ body {
 }
 
 #preview-body > .media-preview-container > .media {
-	max-width: 558px;
+	max-width: 100%;
 }
 
 #preview-body > .filename {
