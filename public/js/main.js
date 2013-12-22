@@ -21,6 +21,22 @@ var human_size = function (bytes, precision) {
 	return size;
 }
 
+/**
+ *  Fix the thumbnail padding on the list to make it vertically centered.
+ */
+var fix_list_thumb = function () {
+	var items = $("#list > li > img");
+
+	for (var i = 0; i < items.length; i++) {
+		var item = $(items[i]);
+
+		if (item.outerHeight() < 50) {
+			var offset = 50 - item.outerHeight();
+			item.css("margin-top", offset / 2);
+		}
+	}
+}
+
 var dirlist = {};
 
 dirlist.current = {
@@ -268,13 +284,25 @@ dirlist.populate_grid = function (list, sort, ascending) {
 
 	// Clear the grid.
 	var grid = document.getElementById("grid");
+	var list_grid = document.getElementById("list");
 	grid.innerHTML = "";
+	list_grid.innerHTML = "";
 
 	// Populate the grid.
 	for (var i = 0; i < list.ids.length; i++) {
 		var item = list.contents[list.ids[i]];
-		grid.appendChild(dirlist.build_box(list.ids[i], item));
+
+		// Grid.
+		var elem = document.createElement("div");
+		grid.appendChild(dirlist.build_box(elem, list.ids[i], item));
+
+		// List.
+		elem = document.createElement("li");
+		list_grid.appendChild(dirlist.build_box(elem, list.ids[i], item));
 	}
+
+	// Fix the thumbnails in the list.
+	fix_list_thumb();
 }
 
 /**
@@ -402,7 +430,7 @@ dirlist.show_preview = function (item) {
  *  @param item Item properties.
  *  @return Box element.
  */
-dirlist.build_box = function (id, item) {
+dirlist.build_box = function (root_element, id, item) {
 	// Choose the correct icon.
 	var icon = "img/";
 	switch (item.type) {
@@ -432,7 +460,7 @@ dirlist.build_box = function (id, item) {
 	// Human-readable size.
 	var size = human_size(item.size);
 
-	var box = document.createElement("div");
+	var box = root_element;
 	box.setAttribute("class", "box");
 	box.setAttribute("title", item.name);
 	if (item.type === "directory") {

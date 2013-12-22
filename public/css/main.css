@@ -21,7 +21,14 @@ body {
 /* Path indicator */
 
 #Home > .breadcrumb {
+	margin-top: -20px;
 	margin-bottom: 0;
+}
+
+@media (min-width: 768px) {
+	#Home > .breadcrumb {
+		margin-top: -10px;
+	}
 }
 
 
@@ -46,6 +53,32 @@ body {
 
 .grid > .box:hover {
 	background: rgb(231, 231, 231);
+}
+
+#list {
+	list-style: none;
+	padding: 0;
+}
+
+#list > li {
+	-webkit-box-orient: vertical;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+
+	height: 50px;
+}
+
+#list > li > img {
+	float: left;
+
+	margin-right: 5px;
+	max-width: 50px !important;
+}
+
+#list > li > .name {
+	width: auto !important;
+	padding-top: 7px;
 }
 
 
