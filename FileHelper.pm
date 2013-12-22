@@ -12,6 +12,7 @@ use Scalar::Util qw(looks_like_number);
 use POSIX;
 
 use Data::Dumper;
+use Mojolicious::Lite;
 use File::Slurp;
 use Image::Magick;
 use Image::EXIF;
@@ -33,13 +34,16 @@ sub generate_thumbnail {
 	if ($mime =~ /(image|video|audio\/mpeg)/i) {
 		my $filename = "/tmp/dirlist_" . $id . ".png";
 
+		# Logging.
+		app->log->debug("Temporary filename for thumbnail: '$filename'");
+
 		# Create the cache file if it doesn't exist.
 		unless (-e $filename) {
 			my $image = Image::Magick->new();
 
 			if ($mime =~ /image/i) {
 				# Image thumbnail.
-				print "Generating a thumbnail for the image: $full_path\n";
+				app->log->debug("Generating a thumbnail for the image: '$full_path'");
 				$image->Read($full_path);
 			} elsif ($mime =~ /video/i) {
 				# Video thumbnail.
@@ -47,11 +51,11 @@ sub generate_thumbnail {
 				my $tempfile = "/tmp/avconv_thumb_" . $id . ".jpg";
 				my $safe_path = safe_path($full_path);
 
-				print "Generating a thumbnail for the video: $full_path\n";
+				app->log->debug("Generating a thumbnail for the video: '$full_path'");
 
 				my $status = system("avconv -i \"$safe_path\" -y -ss $duration -an -f image2 -vframes 1 '$tempfile' -loglevel quiet");
 				if ($status != 0) {
-					print "[ERROR] Couldn't generate thumbnail for '$full_path'\n";
+					app->log->error("Couldn't generate thumbnail for '$full_path'");
 					return undef;
 				}
 
@@ -62,6 +66,7 @@ sub generate_thumbnail {
 				my $mp3 = MP3::Tag->new($full_path);
 				$mp3->get_tags();
 				if (!defined($mp3->{ID3v2})) {
+					app->log->error("Couldn't get ID3v2 tags for '$full_path'");
 					return undef;
 				}
 
@@ -70,6 +75,7 @@ sub generate_thumbnail {
 
 				if (!$imgdata) {
 					# Thumbnail not found.
+					app->log->info("Music album cover wasn't found for '$full_path'");
 					return undef;
 				}
 

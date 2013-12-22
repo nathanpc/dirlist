@@ -160,11 +160,13 @@ get "/list" => sub {
 	# Check for parameters.
 	if (param_defined($path)) {
 		# Check for path.
+		app->log->error("The client didn't specify a path");
 		$response = {
 			"error" => "No path specified."
 		};
 	} elsif (param_defined($root_name)) {
 		# Check for the root name.
+		app->log->error("The client didn't specify a root");
 		$response = {
 			"error" => "No root name specified."
 		};
