@@ -3,14 +3,28 @@
 
 $(document).ready(function () {
 	dirlist.load_roots(true);
+	fix_grid_padding();
 });
 
 $(window).resize(function () {
-	// Fixes the floating bug in small devices.
-	if ($(document).width() < 768) {
+	if ($(window).width() < 768) {
+		// Fixes the floating bug in small devices.
 		dirlist.populate_grid(dirlist.current.contents);
+	} else {
+		// Fixes the paddings for grid on multiple resolutions.
+		fix_grid_padding();
 	}
 });
+
+/**
+ *  Fixes the grid padding.
+ */
+var fix_grid_padding = function () {
+	var boxes = document.getElementById("grid").offsetWidth / 126;
+	boxes = Math.round((boxes - Math.floor(boxes)) * 126);
+
+	$("#grid").css("padding-left", boxes / 2);
+}
 
 /**
  *  Produce a human-friendly size.
