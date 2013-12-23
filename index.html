@@ -1,0 +1,124 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>dirlist+ by nathanpc</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>dirlist+</h1>
+        <p>A fully-featured directory listing web application</p>
+
+        <p class="view"><a href="https://github.com/nathanpc/dirlist">View the Project on GitHub <small>nathanpc/dirlist</small></a></p>
+
+
+        <ul>
+          <li><a href="https://github.com/nathanpc/dirlist/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/nathanpc/dirlist/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/nathanpc/dirlist">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h1>
+<a name="installation" class="anchor" href="#installation"><span class="octicon octicon-link"></span></a>Installation</h1>
+
+<p>First of all you need to prepare your system to run dirlist+. You can do this by executing the following command, which will install the required Perl modules and check if you have the required programs installed:</p>
+
+<pre><code>$ perl -w prepare.pl
+</code></pre>
+
+<p>That will probably take a while, you can use the free time to configure dirlist+. Open the <code>settings.yml</code> file and start changing the defaults to match your needs. Here's a very simple example of a config file:</p>
+
+<div class="highlight highlight-yaml"><pre><span class="nn">---</span>
+<span class="l-Scalar-Plain">roots</span><span class="p-Indicator">:</span>
+  <span class="l-Scalar-Plain">Webroot</span><span class="p-Indicator">:</span>
+    <span class="l-Scalar-Plain">type</span><span class="p-Indicator">:</span> <span class="s">"normal"</span>
+    <span class="l-Scalar-Plain">path</span><span class="p-Indicator">:</span>
+      <span class="l-Scalar-Plain">system</span><span class="p-Indicator">:</span> <span class="s">"~/Sites"</span>
+      <span class="l-Scalar-Plain">web</span><span class="p-Indicator">:</span> <span class="s">"/"</span>
+</pre></div>
+
+<p>First you have the <code>roots</code> array which defines each "Root". Roots are like shortcuts to a "virtual root path". In the repo example there are 3 Roots, one which is the Apache htdocs and other two that are subdirectories (symbolic links in that case) in the Apache htdocs. <strong>Always remember that dirlist+ won't serve files, which means it require you to have a web server like <a href="http://httpd.apache.org/">Apache</a> or <a href="http://nginx.org/">nginx</a>.</strong></p>
+
+<p>Then you have the name of the root (<code>Webroot</code> in the example). Inside that you'll have the following parameters:</p>
+
+<ul>
+<li>
+<strong>type</strong>: The type of root (Options: <code>normal</code>, <code>media</code>)</li>
+<li>
+<strong>path</strong>: Specify the paths where dirlist+ should search/link.
+
+<ul>
+<li>
+<strong>system</strong>: Where the directory located in the system so dirlist+ can index it</li>
+<li>
+<strong>web</strong>: Where the directory is located relative to the web server</li>
+</ul>
+</li>
+</ul><p>That's all you need to have dirlist+ working. Now all you have to do is start the server:</p>
+
+<pre><code>$ perl -w api.pl daemon
+</code></pre>
+
+<p>By default it'll listen on port <code>3000</code>. If you want to change port you just have to execute the following variation of the command:</p>
+
+<pre><code>$ perl -w api.pl daemon --listen "http://*:1234"
+</code></pre>
+
+<p>Another thing that you'll notice is that by default dirlist+ will log to <code>STDOUT</code>. You can make it save the logs by creating a <code>log</code> folder in the same folder as the <code>api.pl</code> file.</p>
+
+<h1>
+<a name="dependencies" class="anchor" href="#dependencies"><span class="octicon octicon-link"></span></a>Dependencies</h1>
+
+<p>This application requires the following Perl modules:</p>
+
+<ul>
+<li><a href="http://mojolicio.us/">Mojolicious::Lite</a></li>
+<li><a href="http://search.cpan.org/dist/YAML-Tiny/lib/YAML/Tiny.pm">YAML::Tiny</a></li>
+<li><a href="http://search.cpan.org/%7Egaas/URI-1.60/URI/Escape.pm">URI::Escape</a></li>
+<li><a href="http://search.cpan.org/%7Erclamp/File-Path-Expand-1.02/lib/File/Path/Expand.pm">File::Path::Expand</a></li>
+<li><a href="http://search.cpan.org/%7Emichielb/File-MimeInfo-0.21/lib/File/MimeInfo.pm">File::MimeInfo</a></li>
+<li><a href="http://www.imagemagick.org/script/perl-magick.php">Image::Magick</a></li>
+<li><a href="http://search.cpan.org/%7Euri/File-Slurp-9999.19/lib/File/Slurp.pm">File::Slurp</a></li>
+<li><a href="http://search.cpan.org/%7Eccpro/Image-EXIF-0.99.4/EXIF.pm">Image::EXIF</a></li>
+<li><a href="http://search.cpan.org/%7Ekudarasp/PHP-Strings-0.28/Strings.pm">PHP::Strings</a></li>
+<li><a href="http://search.cpan.org/%7Emiko/String-Util-1.21/lib/String/Util.pm">String::Util</a></li>
+<li><a href="http://search.cpan.org/%7Eilyaz/MP3-Tag-0.92/Tag/ID3v2.pm">MP3::Tag</a></li>
+</ul><p>Also it'll require you to have the following applications installed in your system:</p>
+
+<ul>
+<li><a href="http://www.ffmpeg.org/">FFmpeg</a></li>
+<li><a href="http://www.mplayerhq.hu/design7/news.html">Mplayer</a></li>
+</ul><h1>
+<a name="credits" class="anchor" href="#credits"><span class="octicon octicon-link"></span></a>Credits</h1>
+
+<p>All the icons used in this project are part of the <a href="https://github.com/snwh/moka-icon-theme/">Moka icon theme</a>.</p>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/nathanpc">nathanpc</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+              <script type="text/javascript">
+            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+          </script>
+          <script type="text/javascript">
+            try {
+              var pageTracker = _gat._getTracker("UA-37990129-5");
+            pageTracker._trackPageview();
+            } catch(err) {}
+          </script>
+
+  </body>
+</html>
