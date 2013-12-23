@@ -11,13 +11,15 @@ First of all you need to prepare your system to run dirlist+. You can do this by
 
 That will probably take a while, you can use the free time to configure dirlist+. Open the `settings.yml` file and start changing the defaults to match your needs. Here's a very simple example of a config file:
 
-    ---
-    roots:
-      Webroot:
-        type: "normal"
-        path:
-          system: "~/Sites"
-          web: "/"
+```yaml
+---
+roots:
+  Webroot:
+    type: "normal"
+    path:
+      system: "~/Sites"
+      web: "/"
+```
 
 First you have the `roots` array which defines each "Root". Roots are like shortcuts to a "virtual root path". In the repo example there are 3 Roots, one which is the Apache htdocs and other two that are subdirectories (symbolic links in that case) in the Apache htdocs. **Always remember that dirlist+ won't serve files, which means it require you to have a web server like [Apache](http://httpd.apache.org/) or [nginx](http://nginx.org/).**
 
