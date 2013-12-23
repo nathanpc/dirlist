@@ -51,7 +51,7 @@ sub generate_thumbnail {
 				my $tempfile = "/tmp/avconv_thumb_" . $id . ".jpg";
 				my $safe_path = safe_path($full_path);
 
-				app->log->debug("Generating a thumbnail for the video: '$full_path'");
+				app->log->debug("Generating a thumbnail for the video: '$safe_path'");
 
 				my $status = system("avconv -i \"$safe_path\" -y -ss $duration -an -f image2 -vframes 1 '$tempfile' -loglevel quiet");
 				if ($status != 0) {
@@ -90,7 +90,13 @@ sub generate_thumbnail {
 		}
 
 		# Get image data.
-		my $image_data = read_file($filename, binmode => ":raw");
+		my $image_data = read_file($filename,
+								   binmode => ":raw",
+								   err_mode => "carp");
+		if (!defined($image_data)) {
+			app->log->error("Couldn't read the thumbnail: '$filename'");
+			return undef;
+		}
 
 		# Base64 the data.
 		return "data:image/png;base64," . encode_base64($image_data);
