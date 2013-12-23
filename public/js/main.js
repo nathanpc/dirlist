@@ -1,7 +1,7 @@
 // main.js
 // Tabbed JS.
 
-var onload = function () {
+function onload() {
 	dirlist.load_roots(true);
 }
 
