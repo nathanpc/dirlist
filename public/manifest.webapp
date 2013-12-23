@@ -1,0 +1,13 @@
+{
+	"version": "0.1",
+	"name": "dirlist+",
+	"description": "The best directory listing application.",
+	"launch_path": "/",
+	"developer": {
+		"name": "Nathan Campos",
+		"url": "http://dreamintech.net/"
+	},
+	"installs_allowed_from": ["*"],
+	"default_locale": "en",
+	"permissions": {}
+}
