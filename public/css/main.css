@@ -6,6 +6,10 @@ body {
 	padding-top: 70px;
 }
 
+.hidden {
+	display: none !important;
+}
+
 
 /* Navbar buttons */
 

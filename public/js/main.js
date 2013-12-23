@@ -4,6 +4,7 @@
 $(document).ready(function () {
 	dirlist.load_roots(true);
 	fix_grid_padding();
+	dirlist.select_view();
 });
 
 $(window).resize(function () {
@@ -15,16 +16,6 @@ $(window).resize(function () {
 		fix_grid_padding();
 	}
 });
-
-/**
- *  Fixes the grid padding.
- */
-var fix_grid_padding = function () {
-	var boxes = document.getElementById("grid").offsetWidth / 126;
-	boxes = Math.round((boxes - Math.floor(boxes)) * 126);
-
-	$("#grid").css("padding-left", boxes / 2);
-}
 
 /**
  *  Produce a human-friendly size.
@@ -63,6 +54,16 @@ var fix_list_thumb = function () {
 			item.css("margin-top", offset / 2);
 		}
 	}
+}
+
+/**
+ *  Fixes the grid padding.
+ */
+var fix_grid_padding = function () {
+	var boxes = document.getElementById("grid").offsetWidth / 126;
+	boxes = Math.round((boxes - Math.floor(boxes)) * 126);
+
+	$("#grid").css("padding-left", boxes / 2);
 }
 
 var dirlist = {};
@@ -256,6 +257,38 @@ dirlist.sort_by = function (type, ascending) {
 
 	// Update the grid.
 	dirlist.populate_grid(dirlist.current.contents);
+}
+
+/**
+ *  Selects the view type.
+ *
+ *  @param type View type.
+ */
+dirlist.select_view = function (type) {
+	if (type === undefined) {
+		type = localStorage.getItem("view_type");
+
+		if (type === null) {
+			type = "grid";
+		}
+	}
+
+	if (type !== undefined) {
+		// Save it.
+		localStorage.setItem("view_type", type);
+	}
+
+	// Update the view.
+	if ($(window).width() >= 768) {
+		if (type === "grid") {
+			$("#grid").removeClass("hidden");
+			$("#list").addClass("hidden");
+		} else {
+			$("#grid").addClass("hidden");
+			$("#list").removeClass("hidden");
+			$("#list").removeClass("visible-xs");
+		}
+	}
 }
 
 /**
