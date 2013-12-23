@@ -23,3 +23,8 @@ Also it'll require you to have the following applications installed in your syst
 
   - [FFmpeg](http://www.ffmpeg.org/)
   - [Mplayer](http://www.mplayerhq.hu/design7/news.html)
+
+
+## Credits
+
+All the icons used in this project are part of the [Moka icon theme](https://github.com/snwh/moka-icon-theme/).
