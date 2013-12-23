@@ -1,10 +1,24 @@
 // main.js
 // Tabbed JS.
 
-function onload() {
+$(document).ready(function () {
 	dirlist.load_roots(true);
-}
+});
 
+$(window).resize(function () {
+	// Fixes the floating bug in small devices.
+	if ($(document).width() < 768) {
+		dirlist.populate_grid(dirlist.current.contents);
+	}
+});
+
+/**
+ *  Produce a human-friendly size.
+ *
+ *  @param bytes The size in bytes.
+ *  @param precision The floating point precision.
+ *  @return A human-readable string.
+ */
 var human_size = function (bytes, precision) {
 	var sizes = ["bytes", "kB", "MB", "GB", "TB"];
 	var size = "0 bytes";

@@ -27,7 +27,7 @@
 		<!-- Javascript -->
 		<script src="js/main.js" type="text/javascript"></script>
 	</head>
-	<body onload="onload();">
+	<body>
 		<div class="container screen" id="Home">
 			<!-- Navbar -->
 			<nav class="navbar navbar-default navbar-fixed-top" role="navigation">

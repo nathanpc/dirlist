@@ -3,6 +3,12 @@
 	"name": "dirlist+",
 	"description": "The best directory listing application.",
 	"launch_path": "/",
+	"icons": {
+		"60": "/icon/ffos-icon-60.png",
+		"120": "/icon/ffos-icon-120.png",
+		"128": "/icon/ffos-icon-128.png",
+		"256": "/icon/ffos-icon-256.png"
+	},
 	"developer": {
 		"name": "Nathan Campos",
 		"url": "http://dreamintech.net/"
