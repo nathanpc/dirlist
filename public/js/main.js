@@ -3,7 +3,6 @@
 
 $(document).ready(function () {
 	dirlist.load_roots(true);
-	fix_grid_padding();
 	dirlist.select_view();
 });
 
@@ -281,6 +280,8 @@ dirlist.select_view = function (type) {
 	// Update the view.
 	if ($(window).width() >= 768) {
 		if (type === "grid") {
+			fix_grid_padding();
+
 			$("#grid").removeClass("hidden");
 			$("#list").addClass("hidden");
 		} else {
