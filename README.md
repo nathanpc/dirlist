@@ -1,6 +1,6 @@
 # dirlist+
 
-A fully-featured directory listing web application.
+dirlist+ is a fully-featured directory listing web application. The idea was to recreate the [Apache Directory Listing](http://wiki.apache.org/httpd/DirectoryListings) but with a better, responsive, interface and add more functionalities like previews, EXIF data, ID3 tags, movie information, and etc.
 
 
 ## Installation
